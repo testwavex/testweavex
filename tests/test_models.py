@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from testweavex.core.models import generate_stable_id, TestStatus, TestType, GapStatus
 
 
@@ -52,3 +53,106 @@ class TestEnums:
         assert GapStatus.pending_review == "pending_review"
         assert GapStatus.closed == "closed"
         assert GapStatus.dismissed == "dismissed"
+
+
+class TestTestCase:
+    def test_valid_construction(self):
+        from testweavex.core.models import TestCase
+        now = datetime.utcnow()
+        tc = TestCase(
+            id=generate_stable_id("features/login.feature", "User logs in"),
+            title="User logs in",
+            feature_id=generate_stable_id("features/login.feature"),
+            gherkin="Given I am on the login page\nWhen I enter valid credentials\nThen I am logged in",
+            test_type=TestType.smoke,
+            skill="functional/smoke",
+            created_at=now,
+            updated_at=now,
+        )
+        assert tc.status == TestStatus.pending
+        assert tc.is_automated is False
+        assert tc.priority == 2
+        assert tc.tags == []
+
+    def test_invalid_test_type_raises(self):
+        from testweavex.core.models import TestCase
+        now = datetime.utcnow()
+        with pytest.raises(Exception):
+            TestCase(
+                id="x" * 64,
+                title="t",
+                feature_id="f" * 64,
+                gherkin="g",
+                test_type="not_a_type",
+                skill="functional/smoke",
+                created_at=now,
+                updated_at=now,
+            )
+
+
+class TestGap:
+    def test_priority_score_defaults_to_zero(self):
+        from testweavex.core.models import Gap
+        gap = Gap(
+            id="g" * 64,
+            test_case_id="t" * 64,
+            detected_at=datetime.utcnow(),
+        )
+        assert gap.priority_score == 0.0
+        assert gap.status == GapStatus.open
+
+    def test_priority_score_accepts_valid_range(self):
+        from testweavex.core.models import Gap
+        gap = Gap(
+            id="g" * 64,
+            test_case_id="t" * 64,
+            priority_score=0.85,
+            detected_at=datetime.utcnow(),
+        )
+        assert gap.priority_score == 0.85
+
+    def test_priority_score_rejects_above_one(self):
+        from testweavex.core.models import Gap
+        with pytest.raises(Exception):
+            Gap(
+                id="g" * 64,
+                test_case_id="t" * 64,
+                priority_score=1.5,
+                detected_at=datetime.utcnow(),
+            )
+
+    def test_priority_score_rejects_below_zero(self):
+        from testweavex.core.models import Gap
+        with pytest.raises(Exception):
+            Gap(
+                id="g" * 64,
+                test_case_id="t" * 64,
+                priority_score=-0.1,
+                detected_at=datetime.utcnow(),
+            )
+
+
+class TestRunAndResult:
+    def test_test_run_defaults(self):
+        from testweavex.core.models import TestRun
+        run = TestRun(
+            id="r" * 36,
+            suite="regression",
+            started_at=datetime.utcnow(),
+        )
+        assert run.environment == "local"
+        assert run.triggered_by == "tw"
+        assert run.completed_at is None
+        assert run.result_ids == []
+
+    def test_test_result_construction(self):
+        from testweavex.core.models import TestResult
+        r = TestResult(
+            id="x" * 36,
+            run_id="r" * 36,
+            test_case_id="t" * 64,
+            status=TestStatus.passed,
+            duration_ms=1234,
+        )
+        assert r.retry_count == 0
+        assert r.error_message is None

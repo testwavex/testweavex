@@ -43,3 +43,87 @@ class GapStatus(str, Enum):
     pending_review = "pending_review"
     closed = "closed"
     dismissed = "dismissed"
+
+
+class TestCase(BaseModel):
+    id: str
+    title: str
+    feature_id: str
+    gherkin: str
+    test_type: TestType
+    skill: str
+    status: TestStatus = TestStatus.pending
+    is_automated: bool = False
+    tcm_id: Optional[str] = None
+    tags: list[str] = []
+    priority: int = 2
+    source_file: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+class Feature(BaseModel):
+    id: str
+    name: str
+    description: str = ""
+    acceptance_criteria: list[str] = []
+    test_case_ids: list[str] = []
+    source_file: Optional[str] = None
+
+
+class TestRun(BaseModel):
+    id: str
+    suite: str
+    environment: str = "local"
+    browser: Optional[str] = None
+    triggered_by: str = "tw"
+    started_at: datetime
+    completed_at: Optional[datetime] = None
+    result_ids: list[str] = []
+
+
+class TestResult(BaseModel):
+    id: str
+    run_id: str
+    test_case_id: str
+    status: TestStatus
+    duration_ms: int
+    error_message: Optional[str] = None
+    screenshot_path: Optional[str] = None
+    retry_count: int = 0
+
+
+class Gap(BaseModel):
+    id: str
+    test_case_id: str
+    priority_score: float = 0.0
+    gap_reason: str = ""
+    suggested_gherkin: Optional[str] = None
+    status: GapStatus = GapStatus.open
+    detected_at: datetime
+    closed_at: Optional[datetime] = None
+
+    @field_validator("priority_score")
+    @classmethod
+    def score_in_range(cls, v: float) -> float:
+        if not 0.0 <= v <= 1.0:
+            raise ValueError(f"priority_score must be 0.0–1.0, got {v}")
+        return v
+
+
+class ScoringSignals(BaseModel):
+    test_priority: int
+    test_type: TestType
+    defect_count: int = 0
+    executions_90d: int = 0
+    days_since_run: int = 0
+
+
+class RunSummary(BaseModel):
+    run_id: str
+    total: int
+    passed: int
+    failed: int
+    skipped: int
+    duration_ms: int
+    coverage_percentage: float

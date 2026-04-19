@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TestWeaveX — Documentation</title>
+<style>
+:root {
+  --brand: #1A6B8A;
+  --brand-dark: #135570;
+  --accent: #E07B39;
+  --surface: #FFFFFF;
+  --surface-sub: #F8FAFB;
+  --text-pri: #1A1A2E;
+  --text-sec: #4A4A6A;
+  --text-mut: #8A8AA0;
+  --border: #E2E8EC;
+  --code-bg: #1A1A2E;
+  --code-text: #E8F4F8;
+  --nav-bg: #1A1A2E;
+  --nav-text: rgba(255,255,255,0.65);
+  --nav-active: #FFFFFF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; font-size: 15px;
+       color: var(--text-pri); background: var(--surface-sub); line-height: 1.7; }
+
+/* ── Nav ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--nav-bg); padding: 0 32px;
+      display: flex; align-items: center; height: 56px; gap: 32px; }
+.nav-logo { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.5px;
+            text-decoration: none; flex-shrink: 0; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 24px; flex: 1; }
+.nav-links a { color: var(--nav-text); text-decoration: none; font-size: 13px;
+               font-weight: 500; transition: color .15s; }
+.nav-links a:hover, .nav-links a.active { color: var(--nav-active); }
+.nav-badge { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+             padding: 2px 8px; border-radius: 999px; }
+
+/* ── Layout ── */
+.page { max-width: 860px; margin: 0 auto; padding: 88px 24px 64px; }
+
+/* ── Hero ── */
+.hero { text-align: center; padding: 64px 0 48px; }
+.hero h1 { font-size: 48px; font-weight: 800; letter-spacing: -1px;
+           color: var(--text-pri); line-height: 1.1; margin-bottom: 16px; }
+.hero h1 span { color: var(--brand); }
+.hero p { font-size: 18px; color: var(--text-sec); max-width: 600px;
+          margin: 0 auto 32px; }
+.hero-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+               margin-bottom: 32px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+         background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+         font-size: 12px; font-weight: 600; color: var(--text-sec); text-decoration: none; }
+.badge:hover { border-color: var(--brand); color: var(--brand); }
+.install-box { background: var(--code-bg); color: var(--code-text);
+               padding: 14px 24px; border-radius: 10px; font-family: monospace;
+               font-size: 15px; display: inline-block; }
+.install-box .prompt { color: var(--accent); margin-right: 8px; }
+
+/* ── Section ── */
+section { margin-bottom: 64px; scroll-margin-top: 72px; }
+section h2 { font-size: 26px; font-weight: 700; color: var(--text-pri);
+             margin-bottom: 8px; padding-bottom: 12px;
+             border-bottom: 2px solid var(--border); }
+section h3 { font-size: 16px; font-weight: 700; color: var(--text-pri);
+             margin: 28px 0 8px; }
+section p { color: var(--text-sec); margin-bottom: 16px; }
+section ul, section ol { padding-left: 20px; color: var(--text-sec); margin-bottom: 16px; }
+section li { margin-bottom: 6px; }
+
+/* ── Code ── */
+pre { background: var(--code-bg); color: var(--code-text); padding: 18px 20px;
+      border-radius: 8px; overflow-x: auto; font-size: 13px; margin: 12px 0 20px;
+      font-family: 'Cascadia Code', 'Fira Code', monospace; line-height: 1.6; }
+code { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 13px;
+       background: #eef2f5; padding: 2px 6px; border-radius: 4px; color: var(--brand-dark); }
+pre code { background: none; padding: 0; color: inherit; }
+.kw { color: #7dd3fc; }
+.cm { color: #6b7280; }
+.st { color: #86efac; }
+.nm { color: #fbbf24; }
+
+/* ── Table ── */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 14px; }
+th { background: var(--surface); text-align: left; padding: 10px 14px;
+     font-size: 11px; font-weight: 700; color: var(--text-mut); text-transform: uppercase;
+     letter-spacing: .5px; border-bottom: 2px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-sec); }
+tr:last-child td { border-bottom: none; }
+td code { font-size: 12px; }
+
+/* ── Steps ── */
+.steps { counter-reset: step; list-style: none; padding: 0; }
+.steps li { counter-increment: step; display: flex; gap: 16px; margin-bottom: 24px; }
+.steps li::before { content: counter(step); width: 32px; height: 32px; min-width: 32px;
+                    background: var(--brand); color: #fff; border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    font-weight: 700; font-size: 13px; margin-top: 2px; }
+.step-body h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+
+/* ── Callout ── */
+.callout { background: #e8f4f8; border-left: 4px solid var(--brand); padding: 14px 18px;
+           border-radius: 0 8px 8px 0; margin: 16px 0; }
+.callout strong { color: var(--brand-dark); }
+
+/* ── Footer ── */
+footer { text-align: center; padding: 32px; font-size: 13px; color: var(--text-mut);
+         border-top: 1px solid var(--border); }
+footer a { color: var(--brand); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#hero">Test<span>Weave</span>X</a>
+  <div class="nav-links">
+    <a href="#getting-started">Getting Started</a>
+    <a href="#cli">CLI Reference</a>
+    <a href="#config">Configuration</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#contributing">Contributing</a>
+  </div>
+  <span class="nav-badge">v0.1.0</span>
+</nav>
+
+<div class="page">
+
+<!-- ── Hero ── -->
+<section id="hero" class="hero">
+  <h1>Unified Test Management<br><span>Powered by Any LLM</span></h1>
+  <p>TestWeaveX brings test case management, execution, and AI-assisted generation into a single Git-native platform. The LLM suggests. You decide.</p>
+  <div class="hero-badges">
+    <a class="badge" href="https://github.com/testweavex/testweavex">&#11088; GitHub</a>
+    <a class="badge" href="https://pypi.org/project/testweavex">&#128230; PyPI</a>
+    <a class="badge" href="#contributing">&#129309; Contribute</a>
+  </div>
+  <div class="install-box"><span class="prompt">$</span>pip install testweavex</div>
+</section>
+
+<!-- ── Getting Started ── -->
+<section id="getting-started">
+  <h2>Getting Started</h2>
+  <p>From install to your first gap report in under 10 minutes.</p>
+
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <h4>Install and initialise</h4>
+        <pre><span class="kw">pip</span> install testweavex
+<span class="kw">tw</span> init --llm-provider anthropic</pre>
+        <p>This creates <code>testweavex.config.yaml</code> in your project root and a <code>testweavex/skills/</code> folder with the 10 built-in skill files.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <h4>Run your test suite</h4>
+        <pre><span class="kw">tw</span>                         <span class="cm"># same as pytest — all flags work</span>
+<span class="kw">tw</span> tests/login.feature    <span class="cm"># run a specific feature</span>
+<span class="kw">tw</span> -k smoke -n 4          <span class="cm"># filter + parallel</span></pre>
+        <p>Results are stored automatically in <code>.testweavex/results.db</code>. No configuration required.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <h4>View your first gap report</h4>
+        <pre><span class="kw">tw</span> gaps --limit 20</pre>
+        <p>TestWeaveX compares your TCM against your automation suite and surfaces unautomated tests ranked by priority score. Generate automation for any gap with <code>tw gaps --generate</code>.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <strong>Team mode:</strong> Add <code>--results-server https://your-server --token $TOKEN</code> to any <code>tw</code> command to share results across your team. One <code>docker-compose up</code> starts the server.
+  </div>
+</section>
+
+<!-- ── CLI Reference ── -->
+<section id="cli">
+  <h2>CLI Reference</h2>
+  <p>Every <code>pytest</code> flag works with <code>tw</code> unchanged. TestWeaveX adds its own flags alongside.</p>
+
+  <table>
+    <thead><tr><th>Command</th><th>Description</th><th>Key Options</th></tr></thead>
+    <tbody>
+      <tr><td><code>tw [paths]</code></td><td>Run tests (wraps pytest)</td><td><code>--results-server</code>, <code>--token</code>, <code>--sync-tcm</code>, <code>--gaps</code></td></tr>
+      <tr><td><code>tw init</code></td><td>Initialise TestWeaveX in a project</td><td><code>--llm-provider</code>, <code>--tcm</code></td></tr>
+      <tr><td><code>tw generate</code></td><td>Generate tests from a feature description</td><td><code>--feature</code>, <code>--skill</code>, <code>--output</code></td></tr>
+      <tr><td><code>tw gaps</code></td><td>Run gap analysis, show ranked report</td><td><code>--limit</code>, <code>--min-score</code>, <code>--generate</code></td></tr>
+      <tr><td><code>tw import</code></td><td>Import from external TCM or CSV</td><td><code>--source</code> (testrail/xray/csv)</td></tr>
+      <tr><td><code>tw status</code></td><td>Show coverage map and summary</td><td><code>--format</code> (table/json/html)</td></tr>
+      <tr><td><code>tw history</code></td><td>Show execution history</td><td><code>--id</code>, <code>--last-n</code></td></tr>
+      <tr><td><code>tw serve</code></td><td>Start local Web UI</td><td><code>--port</code> (default: 8080)</td></tr>
+      <tr><td><code>tw migrate</code></td><td>Migrate from external TCM</td><td><code>--source</code>, <code>--dry-run</code></td></tr>
+      <tr><td><code>tw sync</code></td><td>Push results to external TCM</td><td><code>--tcm</code>, <code>--run-id</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>CI/CD Example (GitHub Actions)</h3>
+  <pre>- <span class="nm">name</span>: Run tests
+  <span class="nm">run</span>: |
+    tw run --suite regression \
+           --results-server <span class="st">${{ secrets.TW_SERVER }}</span> \
+           --token <span class="st">${{ secrets.TW_TOKEN }}</span> \
+           --sync-tcm testrail</pre>
+</section>
+
+<!-- ── Configuration ── -->
+<section id="config">
+  <h2>Configuration</h2>
+  <p>Create <code>testweavex.config.yaml</code> in your project root. All values support <code>${ENV_VAR}</code> interpolation. Missing keys use defaults.</p>
+
+  <pre><span class="cm"># testweavex.config.yaml</span>
+<span class="nm">llm</span>:
+  <span class="nm">provider</span>: <span class="st">anthropic</span>        <span class="cm"># openai | anthropic | ollama | azure</span>
+  <span class="nm">model</span>: <span class="st">claude-sonnet-4-6</span>
+  <span class="nm">api_key</span>: <span class="st">${ANTHROPIC_API_KEY}</span>
+  <span class="nm">temperature</span>: <span class="st">0.3</span>
+  <span class="nm">max_retries</span>: <span class="st">3</span>
+  <span class="nm">timeout_seconds</span>: <span class="st">30</span>
+
+<span class="nm">results_server</span>: <span class="st">${TESTWEAVEX_SERVER}</span>  <span class="cm"># optional — team mode</span>
+
+<span class="nm">tcm</span>:
+  <span class="nm">provider</span>: <span class="st">none</span>              <span class="cm"># testrail | xray | none</span>
+
+<span class="nm">gap_analysis</span>:
+  <span class="nm">scoring_weights</span>:
+    <span class="nm">priority</span>:  <span class="st">0.30</span>
+    <span class="nm">test_type</span>: <span class="st">0.25</span>
+    <span class="nm">defects</span>:   <span class="st">0.20</span>
+    <span class="nm">frequency</span>: <span class="st">0.15</span>
+    <span class="nm">staleness</span>: <span class="st">0.10</span>
+  <span class="nm">match_threshold</span>: <span class="st">0.65</span>
+  <span class="nm">top_gaps_default</span>: <span class="st">10</span></pre>
+
+  <h3>LLM Providers</h3>
+  <table>
+    <thead><tr><th>Provider</th><th>Key Setting</th><th>Models</th></tr></thead>
+    <tbody>
+      <tr><td>Anthropic</td><td><code>api_key: ${ANTHROPIC_API_KEY}</code></td><td>claude-sonnet-4-6, claude-opus-4-7, claude-haiku-4-5</td></tr>
+      <tr><td>OpenAI</td><td><code>api_key: ${OPENAI_API_KEY}</code></td><td>gpt-4o, gpt-4-turbo, gpt-3.5-turbo</td></tr>
+      <tr><td>Ollama</td><td><code>base_url: http://localhost:11434</code></td><td>llama3, mistral, phi-3, any local model</td></tr>
+      <tr><td>Azure OpenAI</td><td><code>azure_endpoint</code>, <code>deployment_name</code></td><td>All Azure-deployed OpenAI models</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── Architecture ── -->
+<section id="architecture">
+  <h2>Architecture</h2>
+  <p>TestWeaveX is a pytest plugin with a thin CLI wrapper. All functionality flows through one of three pipelines.</p>
+
+  <table>
+    <thead><tr><th>Pipeline</th><th>Input</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Generation</strong></td><td>Feature description + skill file</td><td>Approved Gherkin + step definitions in repo</td></tr>
+      <tr><td><strong>Execution</strong></td><td>Feature files + pytest config</td><td>Test results in storage + TCM updated</td></tr>
+      <tr><td><strong>Gap Analysis</strong></td><td>TCM test cases + automation suite</td><td>Ranked gap list + optional generated automation</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Component Map</h3>
+  <table>
+    <thead><tr><th>Module</th><th>Responsibility</th><th>Phase</th></tr></thead>
+    <tbody>
+      <tr><td><code>core/models.py</code></td><td>Pydantic data models — shared contract</td><td>1</td></tr>
+      <tr><td><code>core/config.py</code></td><td>YAML config loader</td><td>1</td></tr>
+      <tr><td><code>storage/sqlite.py</code></td><td>Local SQLite persistence (default)</td><td>1</td></tr>
+      <tr><td><code>llm/</code></td><td>Provider-agnostic LLM adapter layer</td><td>2</td></tr>
+      <tr><td><code>skills/</code></td><td>YAML skill files for each test type</td><td>2</td></tr>
+      <tr><td><code>generation/</code></td><td>Feature &rarr; Gherkin &rarr; step definitions</td><td>3</td></tr>
+      <tr><td><code>execution/plugin.py</code></td><td>pytest plugin hooks</td><td>4</td></tr>
+      <tr><td><code>gap/</code></td><td>Gap detection, scoring, automation trigger</td><td>5</td></tr>
+      <tr><td><code>web/</code></td><td>FastAPI + React dashboard</td><td>6</td></tr>
+      <tr><td><code>tcm/</code></td><td>TestRail + Xray connectors</td><td>7</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Stable ID Algorithm</h3>
+  <p>Every test case gets a deterministic 64-character ID derived from its feature file path and scenario name. This ID is stable across machines, CI runs, and environments. <strong>The algorithm is frozen &mdash; never change it after first deployment.</strong></p>
+  <pre><span class="kw">import</span> hashlib
+
+<span class="kw">def</span> <span class="nm">generate_stable_id</span>(*parts: str) -&gt; str:
+    key = <span class="st">"|"</span>.join(parts).encode(<span class="st">"utf-8"</span>)
+    <span class="kw">return</span> hashlib.sha256(key).hexdigest()  <span class="cm"># full 64 chars</span>
+
+<span class="cm"># test_case_id = generate_stable_id(feature_path, scenario_name)</span>
+<span class="cm"># feature_id   = generate_stable_id(feature_path)</span></pre>
+
+  <h3>Gap Priority Scoring</h3>
+  <p>Gaps are ranked by a six-signal weighted score (0.0&ndash;1.0). Higher = automate first.</p>
+  <table>
+    <thead><tr><th>Signal</th><th>Weight</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Priority</td><td>30%</td><td>P1 tests must be automated before P4</td></tr>
+      <tr><td>Test Type</td><td>25%</td><td>Smoke/E2E gaps hurt most (score 1.0/0.9)</td></tr>
+      <tr><td>Defect History</td><td>20%</td><td>Tests linked to past bugs are high value</td></tr>
+      <tr><td>Frequency</td><td>15%</td><td>Frequently-run manual tests benefit most from automation</td></tr>
+      <tr><td>Staleness</td><td>10%</td><td>Tests not run recently carry higher regression risk</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── Contributing ── -->
+<section id="contributing">
+  <h2>Contributing</h2>
+
+  <h3>Repository Structure</h3>
+  <table>
+    <thead><tr><th>Repo</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://github.com/testweavex/testweavex">testweavex/testweavex</a></td><td>Core Python library (this package)</td></tr>
+      <tr><td>testweavex/testweavex-server</td><td>Self-hosted result server (Docker)</td></tr>
+      <tr><td>testweavex/testweavex-skills</td><td>Community skill file contributions</td></tr>
+      <tr><td>testweavex/testweavex-docs</td><td>Full Docusaurus documentation site</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Adding a Custom Skill</h3>
+  <p>The easiest way to contribute is a new skill YAML file. Create <code>testweavex/skills/custom/your-skill.yaml</code>:</p>
+  <pre><span class="nm">name</span>: <span class="st">custom/your-skill</span>
+<span class="nm">display_name</span>: <span class="st">Your Skill Name</span>
+<span class="nm">description</span>: <span class="st">What this skill generates</span>
+
+<span class="nm">prompt_template</span>: |
+  You are a senior QA engineer.
+  Feature: {feature_description}
+  Generate {n_suggestions} test scenarios that...
+  Return JSON: title, gherkin, confidence, rationale, suggested_tags
+
+<span class="nm">assertion_hints</span>:
+  - <span class="st">Verify primary outcome</span>
+<span class="nm">tags</span>: [<span class="st">custom</span>]
+<span class="nm">priority</span>: <span class="st">3</span></pre>
+
+  <h3>Development Setup</h3>
+  <pre><span class="kw">git</span> clone https://github.com/testweavex/testweavex
+<span class="kw">cd</span> testweavex
+<span class="kw">pip</span> install -e <span class="st">".[dev]"</span>
+<span class="kw">pytest</span> tests/ -v</pre>
+
+  <div class="callout">
+    <strong>Contribution areas:</strong> Skill YAML files (lowest barrier), LLM adapter implementations for new providers, external TCM connectors, bug fixes in core library.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  TestWeaveX is open source under the MIT licence &mdash;
+  <a href="https://github.com/testweavex/testweavex">github.com/testweavex/testweavex</a>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section[id]');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -75% 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

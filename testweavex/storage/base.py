@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 from testweavex.core.models import (
     Gap,
-    RunSummary,
     ScoringSignals,
     TestCase,
     TestResult,

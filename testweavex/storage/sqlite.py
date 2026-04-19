@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import uuid
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
 from sqlalchemy import create_engine, text
@@ -32,17 +31,6 @@ from testweavex.storage.models import (
     TestRunORM,
 )
 
-
-def _find_project_root(start: Path) -> Path:
-    markers = {"pyproject.toml", "pytest.ini", "setup.cfg", "setup.py"}
-    current = start.resolve()
-    while True:
-        if any((current / m).exists() for m in markers):
-            return current
-        parent = current.parent
-        if parent == current:
-            return start.resolve()
-        current = parent
 
 
 def _orm_to_test_case(row: TestCaseORM) -> TestCase:
@@ -94,10 +82,7 @@ class SQLiteRepository(StorageRepository):
 
     def __init__(self, db_url: Optional[str] = None) -> None:
         if db_url is None:
-            root = _find_project_root(Path.cwd())
-            db_dir = root / ".testweavex"
-            db_dir.mkdir(exist_ok=True)
-            db_url = f"sqlite:///{db_dir / 'results.db'}"
+            db_url = "sqlite:///:memory:"
 
         self._engine = create_engine(db_url, echo=False)
         Base.metadata.create_all(self._engine)

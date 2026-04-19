@@ -42,7 +42,7 @@ def _make_test_case(feature_path: str = "features/login.feature",
 
 
 class TestUpsertAndGetTestCase:
-    def test_insert_then_retrieve(self, repo):
+    def test_upsert_creates_new_test_case(self, repo):
         tc = _make_test_case()
         repo.upsert_test_case(tc)
         retrieved = repo.get_test_case(tc.id)
@@ -59,7 +59,7 @@ class TestUpsertAndGetTestCase:
         assert retrieved.title == "Updated title"
         assert retrieved.is_automated is True
 
-    def test_get_nonexistent_raises(self, repo):
+    def test_get_test_case_not_found(self, repo):
         from testweavex.core.exceptions import RecordNotFound
         with pytest.raises(RecordNotFound):
             repo.get_test_case("nonexistent-id")
@@ -89,14 +89,14 @@ class TestRunLifecycle:
         assert retrieved.suite == "regression"
         assert retrieved.environment == "ci"
 
-    def test_get_nonexistent_run_raises(self, repo):
+    def test_get_run_not_found(self, repo):
         from testweavex.core.exceptions import RecordNotFound
         with pytest.raises(RecordNotFound):
             repo.get_run("nonexistent-run-id")
 
 
 class TestCoveragePercentage:
-    def test_empty_db_returns_zero(self, repo):
+    def test_no_test_cases(self, repo):
         assert repo.get_coverage_percentage() == 0.0
 
     def test_all_automated(self, repo):

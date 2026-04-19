@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -28,7 +27,7 @@ def repo():
 
 def _make_test_case(feature_path: str = "features/login.feature",
                     scenario: str = "User logs in") -> TestCase:
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     return TestCase(
         id=generate_stable_id(feature_path, scenario),
         title=scenario,

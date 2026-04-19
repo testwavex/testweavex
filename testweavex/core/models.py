@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime  # noqa: F401
+from datetime import datetime
 from enum import Enum
-from typing import Optional  # noqa: F401
+from typing import Optional
 
-from pydantic import BaseModel, field_validator  # noqa: F401
+from pydantic import BaseModel, Field, field_validator
 
 
 def generate_stable_id(*parts: str) -> str:
@@ -55,7 +55,7 @@ class TestCase(BaseModel):
     status: TestStatus = TestStatus.pending
     is_automated: bool = False
     tcm_id: Optional[str] = None
-    tags: list[str] = []
+    tags: list[str] = Field(default_factory=list)
     priority: int = 2
     source_file: Optional[str] = None
     created_at: datetime
@@ -66,8 +66,8 @@ class Feature(BaseModel):
     id: str
     name: str
     description: str = ""
-    acceptance_criteria: list[str] = []
-    test_case_ids: list[str] = []
+    acceptance_criteria: list[str] = Field(default_factory=list)
+    test_case_ids: list[str] = Field(default_factory=list)
     source_file: Optional[str] = None
 
 
@@ -79,7 +79,7 @@ class TestRun(BaseModel):
     triggered_by: str = "tw"
     started_at: datetime
     completed_at: Optional[datetime] = None
-    result_ids: list[str] = []
+    result_ids: list[str] = Field(default_factory=list)
 
 
 class TestResult(BaseModel):
